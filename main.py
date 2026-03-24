@@ -75,7 +75,7 @@ class Game:
     def draw(self):
         """Render the game."""
         if self.engine.current_screen:
-            self.engine.current_screen.draw(self.engine)
+            self.engine.current_screen.draw(self.renderer)
         else:
             # Draw title screen
             self.renderer.clear(COLORS['black'])
