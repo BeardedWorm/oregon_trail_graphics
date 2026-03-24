@@ -5,44 +5,41 @@ Main entry point for the Pygame-based graphical implementation
 
 import pygame
 import sys
+import os
 from pathlib import Path
-
-# Game constants
-WINDOW_WIDTH = 640
-WINDOW_HEIGHT = 480
-WINDOW_TITLE = "The Oregon Trail - A Computer Game"
-FPS = 60
-
-# Color palette (16-color retro)
-COLORS = {
-    'black': (0, 0, 0),
-    'blue': (0, 0, 170),
-    'green': (0, 170, 0),
-    'cyan': (0, 170, 170),
-    'red': (170, 0, 0),
-    'magenta': (170, 0, 170),
-    'brown': (170, 85, 0),
-    'white': (170, 170, 170),
-    'gray': (85, 85, 85),
-    'light_blue': (85, 85, 255),
-    'light_green': (85, 255, 85),
-    'light_cyan': (85, 255, 255),
-    'light_red': (255, 85, 85),
-    'light_magenta': (255, 85, 255),
-    'yellow': (255, 255, 85),
-    'light_white': (255, 255, 255),
-}
+from config import (
+    WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, FPS,
+    COLORS, PALETTE_NAME
+)
+from graphics import Renderer
 
 
 class Game:
     def __init__(self):
         """Initialize the game."""
+        os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
         pygame.init()
-        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        
+        # Set up display
+        self.screen = pygame.display.set_mode(
+            (WINDOW_WIDTH, WINDOW_HEIGHT),
+            flags=pygame.SCALED
+        )
         pygame.display.set_caption(WINDOW_TITLE)
+        pygame.display.set_icon(pygame.Surface((1, 1)))
+        
+        # Initialize renderer
+        self.renderer = Renderer(self.screen)
+        
+        # Game state
         self.clock = pygame.time.Clock()
         self.running = True
-        self.font = pygame.font.Font(None, 24)
+        
+        print(f"✓ Pygame initialized ({pygame.version.ver})")
+        print(f"✓ Display: {WINDOW_WIDTH}x{WINDOW_HEIGHT}")
+        print(f"✓ Palette: {PALETTE_NAME} (16 colors)")
+        print(f"✓ FPS: {FPS}")
+        print(f"✓ Renderer initialized")
 
     def handle_events(self):
         """Handle user input and window events."""
@@ -52,6 +49,9 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                print(f"Mouse clicked at: {pos}")
 
     def update(self):
         """Update game logic."""
@@ -59,35 +59,59 @@ class Game:
 
     def draw(self):
         """Render the game."""
-        self.screen.fill(COLORS['black'])
+        self.renderer.clear(COLORS['black'])
+        
+        # Draw HUD background
+        self.renderer.draw_hud_background()
         
         # Draw title
-        title_surface = self.font.render(
-            "The Oregon Trail - Graphical Version", 
-            True, 
-            COLORS['light_green']
+        self.renderer.draw_text(
+            "The Oregon Trail - Graphical Version",
+            WINDOW_WIDTH // 2 - 150,
+            10,
+            COLORS['light_green'],
+            'large'
         )
-        self.screen.blit(title_surface, (160, 100))
         
-        # Draw status
-        status_surface = self.font.render(
-            "Development in progress - Press ESC to exit", 
-            True, 
-            COLORS['light_cyan']
+        # Draw palette label
+        self.renderer.draw_text(
+            f"Color Palette: {PALETTE_NAME}",
+            20,
+            80,
+            COLORS['light_cyan'],
+            'small'
         )
-        self.screen.blit(status_surface, (140, 150))
         
-        pygame.display.flip()
+        # Draw color palette
+        self.renderer.draw_color_palette()
+        
+        # Draw status at bottom
+        self.renderer.draw_text(
+            "Phase 1: Graphics Foundation - Press ESC to exit",
+            10,
+            WINDOW_HEIGHT - 25,
+            COLORS['light_white'],
+            'small'
+        )
+        
+        # Update display
+        self.renderer.update()
 
     def run(self):
         """Main game loop."""
+        print(f"\n{'='*50}")
+        print(f"Starting {WINDOW_TITLE}")
+        print(f"{'='*50}\n")
+        
         while self.running:
             self.handle_events()
             self.update()
             self.draw()
             self.clock.tick(FPS)
 
+        print(f"\nShutting down...")
         pygame.quit()
+        print(f"✓ Game closed\n")
         sys.exit()
 
 
