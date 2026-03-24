@@ -1,0 +1,32 @@
+# Game Build Artifacts
+build/
+dist/
+*.pyc
+__pycache__/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Game Data
+saves/
+leaderboard.json
+*.log
+
+# Python
+.env
+.venv
+venv/
+env/
+
+# Development
+temp/
+test_assets/
