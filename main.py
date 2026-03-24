@@ -12,6 +12,10 @@ from config import (
     COLORS, PALETTE_NAME
 )
 from graphics import Renderer
+from game_engine import GameEngine
+from screens import TravelScreen
+from difficulty_settings import DifficultyLevel
+from input_system import InputMode
 
 
 class Game:
@@ -31,15 +35,20 @@ class Game:
         # Initialize renderer
         self.renderer = Renderer(self.screen)
         
+        # Initialize game engine
+        self.engine = GameEngine(self.renderer)
+        
         # Game state
         self.clock = pygame.time.Clock()
         self.running = True
+        self.game_started = False
         
         print(f"✓ Pygame initialized ({pygame.version.ver})")
         print(f"✓ Display: {WINDOW_WIDTH}x{WINDOW_HEIGHT}")
         print(f"✓ Palette: {PALETTE_NAME} (16 colors)")
         print(f"✓ FPS: {FPS}")
         print(f"✓ Renderer initialized")
+        print(f"✓ Game engine ready")
 
     def handle_events(self):
         """Handle user input and window events."""
@@ -48,54 +57,57 @@ class Game:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                print(f"Mouse clicked at: {pos}")
+                    # Pop screen or exit
+                    if self.engine.screen_stack:
+                        self.engine.pop_screen()
+                    else:
+                        self.running = False
+                elif event.key == pygame.K_RETURN and not self.game_started:
+                    # Start game from main menu
+                    self.game_started = True
+                    self.engine.initialize_game()
+                    self.engine.current_screen = TravelScreen(self.engine)
 
-    def update(self):
+    def update(self, delta_time: float):
         """Update game logic."""
-        pass
+        self.engine.update(delta_time)
 
     def draw(self):
         """Render the game."""
-        self.renderer.clear(COLORS['black'])
-        
-        # Draw HUD background
-        self.renderer.draw_hud_background()
-        
-        # Draw title
-        self.renderer.draw_text(
-            "The Oregon Trail - Graphical Version",
-            WINDOW_WIDTH // 2 - 150,
-            10,
-            COLORS['light_green'],
-            'large'
-        )
-        
-        # Draw palette label
-        self.renderer.draw_text(
-            f"Color Palette: {PALETTE_NAME}",
-            20,
-            80,
-            COLORS['light_cyan'],
-            'small'
-        )
-        
-        # Draw color palette
-        self.renderer.draw_color_palette()
-        
-        # Draw status at bottom
-        self.renderer.draw_text(
-            "Phase 1: Graphics Foundation - Press ESC to exit",
-            10,
-            WINDOW_HEIGHT - 25,
-            COLORS['light_white'],
-            'small'
-        )
-        
-        # Update display
-        self.renderer.update()
+        if self.engine.current_screen:
+            self.engine.current_screen.draw(self.engine)
+        else:
+            # Draw title screen
+            self.renderer.clear(COLORS['black'])
+            self.renderer.draw_text(
+                "The Oregon Trail",
+                WINDOW_WIDTH // 2 - 100,
+                100,
+                COLORS['light_green'],
+                'large'
+            )
+            self.renderer.draw_text(
+                "Graphical Version",
+                WINDOW_WIDTH // 2 - 80,
+                150,
+                COLORS['light_green'],
+                'small'
+            )
+            self.renderer.draw_text(
+                "Press ENTER to start",
+                WINDOW_WIDTH // 2 - 90,
+                250,
+                COLORS['yellow'],
+                'small'
+            )
+            self.renderer.draw_text(
+                "Press ESC to exit",
+                WINDOW_WIDTH // 2 - 70,
+                300,
+                COLORS['cyan'],
+                'small'
+            )
+            self.renderer.update()
 
     def run(self):
         """Main game loop."""
@@ -105,9 +117,9 @@ class Game:
         
         while self.running:
             self.handle_events()
-            self.update()
+            delta_time = self.clock.tick(FPS) / 1000.0
+            self.update(delta_time)
             self.draw()
-            self.clock.tick(FPS)
 
         print(f"\nShutting down...")
         pygame.quit()
