@@ -4,10 +4,10 @@ A pixel-art graphical recreation of the classic 1985 Oregon Trail educational co
 
 ## Project Status
 
-🚀 **In Development** - Phase 1 Starting Soon
+🚀 **Fully Playable** - Core gameplay working!
 
 - Terminal version: ✅ Complete ([oregon_trail_python](https://github.com/BeardedWorm/oregon_trail_python))
-- Graphical version: 🔨 In progress
+- Graphical version: ✅ Core mechanics complete, input system working
 
 ## Overview
 
@@ -127,6 +127,36 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+## How to Play
+
+### Starting the Game
+1. Run `python main.py` - the title screen will appear
+2. Press **ENTER** to begin your journey
+
+### Main Actions
+Use **arrow keys** (LEFT/RIGHT) or **A/D** to select an action:
+- **Travel** - Move along the trail (~20 miles per day)
+- **Hunt** - Hunt for food to replenish supplies
+- **Rest** - Rest your party to restore health
+- **Status** - Check party health and inventory
+
+Press **ENTER** or **SPACE** to execute the selected action.
+
+### Game Objectives
+- Travel 1,600+ miles from Missouri to Oregon City
+- Keep your party members alive and healthy
+- Manage food, ammunition, and money
+- Reach the end with at least your leader alive to win!
+
+## Testing
+
+Run the test suite to verify all systems:
+
+```bash
+python test_game.py
+```
+
 
 ## Contributing
 
