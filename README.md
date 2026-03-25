@@ -4,10 +4,10 @@ A pixel-art graphical recreation of the classic 1985 Oregon Trail educational co
 
 ## Project Status
 
-🚀 **Fully Playable** - Core gameplay working!
+🚀 **Fully Playable** - All graphics and mini-games implemented!
 
 - Terminal version: ✅ Complete ([oregon_trail_python](https://github.com/BeardedWorm/oregon_trail_python))
-- Graphical version: ✅ Core mechanics complete, input system working
+- Graphical version: ✅ **Complete with graphics, mini-games, and character portraits**
 
 ## Overview
 
@@ -18,26 +18,29 @@ This is an upgraded graphical version of the Oregon Trail with:
 - **Full graphical UI** with menus, HUD, character portraits, and map display
 - **Pygame-based engine** for smooth cross-platform gameplay
 
-## Features (Planned)
+## Features (Now Implemented!)
 
 ### Gameplay
-- 1,600+ mile journey across 11 trail locations
-- Resource management (food, ammunition, medicine, spare parts, money)
-- Party management with character portraits and health tracking
-- Realistic illness system with 4 period diseases
-- Random event engine with 10+ encounter types
-- Visual hunting mini-game
-- Trading post interactions at forts
-- Day/season/year progression
+- ✅ 1,600+ mile journey across 11 trail locations
+- ✅ Resource management (food, ammunition, medicine, spare parts, money)
+- ✅ Party management with **character portraits and health bars**
+- ✅ Realistic illness system with 4 period diseases
+- ✅ Random event engine with 10+ encounter types
+- ✅ **Interactive hunting mini-game** with animals to shoot
+- ✅ **River crossing mini-game** with obstacles to dodge
+- ✅ Trading post interactions at forts
+- ✅ Day/season/year progression
 
 ### Graphics & UI
-- Pixel-art character sprites and party portraits
-- Terrain tiles and location graphics
-- Weather effects (snow, rain, storms)
-- Animated sequences (hunting, travel, events)
-- Interactive menus with mouse/keyboard support
-- Real-time HUD showing resources and status
-- Character status screens with detailed information
+- ✅ **Wagon graphics** on the trail
+- ✅ **Character portraits** for all 5 party members
+- ✅ **Health bars** showing party member status
+- ✅ Terrain graphics (sky, grass, trail)
+- ✅ **Hunting mini-game** with visible animals and crosshair
+- ✅ **River crossing** with animated waves and raft
+- ✅ Keyboard-based navigation (arrow keys or A/D)
+- ✅ Real-time HUD showing resources and status
+- ✅ CGA 16-color palette for authentic 1985 look
 
 ## Project Structure
 
@@ -142,6 +145,23 @@ Use **arrow keys** (LEFT/RIGHT) or **A/D** to select an action:
 - **Status** - Check party health and inventory
 
 Press **ENTER** or **SPACE** to execute the selected action.
+
+### Mini-Games
+
+#### 🏹 Hunting Mini-Game
+When you select **Hunt**, you'll enter an interactive hunting ground:
+- **Animals appear** on screen (deer, buffalo, rabbits)
+- **Move your crosshair** with the mouse
+- **Press SPACE** to shoot at animals
+- **Collect meat** to replenish your food supplies
+- Hunt for up to 15 seconds or press ENTER to exit
+
+#### 🌊 River Crossing Mini-Game
+When crossing rivers, you'll navigate a raft:
+- **Use arrow keys** or **A/D** to dodge obstacles
+- **Avoid logs** falling down the river
+- **Minimize damage** to your party's health
+- **8-second crossing** - dodge obstacles to make it safely
 
 ### Game Objectives
 - Travel 1,600+ miles from Missouri to Oregon City
