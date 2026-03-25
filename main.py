@@ -6,6 +6,7 @@ Main entry point for the Pygame-based graphical implementation
 import pygame
 import sys
 import os
+import random
 from pathlib import Path
 from config import (
     WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, FPS,
@@ -13,9 +14,8 @@ from config import (
 )
 from graphics import Renderer
 from game_engine import GameEngine
-from screens import TravelScreen
-from difficulty_settings import DifficultyLevel
-from input_system import InputMode
+from screens import TravelScreen, HuntScreen, RiverCrossingScreen
+from game_engine import GameState_Enum
 
 
 class Game:
@@ -75,6 +75,25 @@ class Game:
     def update(self, delta_time: float):
         """Update game logic."""
         self.engine.update(delta_time)
+        
+        # Handle screen transitions based on engine state
+        if self.game_started:
+            current_state = getattr(self.engine, 'current_state', None)
+            
+            if current_state == GameState_Enum.HUNT:
+                if not isinstance(self.engine.current_screen, HuntScreen):
+                    self.engine.current_screen = HuntScreen(self.engine)
+            elif current_state == GameState_Enum.TRAVEL:
+                if not isinstance(self.engine.current_screen, TravelScreen):
+                    self.engine.current_screen = TravelScreen(self.engine)
+            elif current_state == GameState_Enum.EVENT:
+                # Randomly show river crossing
+                if random.random() < 0.3:
+                    self.engine.current_screen = RiverCrossingScreen(self.engine)
+        
+        # Update current screen
+        if self.engine.current_screen:
+            self.engine.current_screen.update(delta_time)
 
     def draw(self):
         """Render the game."""

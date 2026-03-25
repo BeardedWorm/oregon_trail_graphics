@@ -106,21 +106,19 @@ class SpriteGenerator:
         return surface
     
     @staticmethod
-    def create_snake_sprite(size=24, color=COLORS['light_green']):
+    def create_snake_sprite(size=24, color=None):
         """Create a snake sprite."""
+        if color is None:
+            color = (0, 255, 0)  # light green
+        
         surface = pygame.Surface((size, size), pygame.SRCALPHA)
         
-        # Snake body (wavy line)
-        points = []
-        for x in range(0, size, 2):
-            y = 12 + int(4 * pygame.math.Vector2(1, 0).rotate(x * 10).y)
-            points.append((x, y))
-        
-        if len(points) > 1:
-            pygame.draw.lines(surface, color, points, 3)
+        # Simple snake: just draw rectangles
+        for i in range(3):
+            pygame.draw.rect(surface, color, (i * 8, 10, 8, 4))
         
         # Head
-        pygame.draw.circle(surface, COLORS['light_red'], (size - 3, points[-1][1] if points else 12), 2)
+        pygame.draw.circle(surface, (255, 100, 100), (size - 3, 12), 2)
         
         return surface
     
