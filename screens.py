@@ -97,7 +97,7 @@ class TravelScreen(Screen):
         
         for i, (button_text, x_pos) in enumerate(zip(buttons, x_positions)):
             color = COLORS['light_cyan'] if i == self.selected_action else COLORS['white']
-            bg_color = COLORS['dark_gray'] if i == self.selected_action else COLORS['black']
+            bg_color = COLORS['gray'] if i == self.selected_action else COLORS['black']
             # Draw button background
             renderer.draw_rect(x_pos - 30, WINDOW_HEIGHT - 90, 90, 35, bg_color)
             renderer.draw_rect(x_pos - 30, WINDOW_HEIGHT - 90, 90, 35, color, filled=False, thickness=2)
