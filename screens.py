@@ -91,51 +91,32 @@ class TravelScreen(Screen):
         """
         super().__init__()
         self.engine = game_engine
-        self.input_handler = GameplayInputHandler()
-        self._setup_buttons()
+        self.selected_action = 0  # 0=Travel, 1=Hunt, 2=Rest, 3=Status
     
-    def _setup_buttons(self):
-        """Set up interactive buttons."""
-        # Travel button
-        travel_rect = pygame.Rect(50, WINDOW_HEIGHT - 100, 100, 40)
-        self.input_handler.register_mouse_button(
-            travel_rect,
-            self._on_travel_click,
-            self._on_travel_hover,
-            self._on_travel_hover_exit
-        )
+    def handle_input(self, event):
+        """Handle input.
         
-        # Hunt button
-        hunt_rect = pygame.Rect(160, WINDOW_HEIGHT - 100, 100, 40)
-        self.input_handler.register_mouse_button(
-            hunt_rect,
-            self._on_hunt_click,
-            self._on_hunt_hover,
-            self._on_hunt_hover_exit
-        )
-        
-        # Rest button
-        rest_rect = pygame.Rect(270, WINDOW_HEIGHT - 100, 100, 40)
-        self.input_handler.register_mouse_button(
-            rest_rect,
-            self._on_rest_click,
-            self._on_rest_hover,
-            self._on_rest_hover_exit
-        )
-        
-        # Status button
-        status_rect = pygame.Rect(380, WINDOW_HEIGHT - 100, 100, 40)
-        self.input_handler.register_mouse_button(
-            status_rect,
-            self._on_status_click,
-            self._on_status_hover,
-            self._on_status_hover_exit
-        )
+        Args:
+            event: Pygame event
+        """
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                self.selected_action = max(0, self.selected_action - 1)
+            elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                self.selected_action = min(3, self.selected_action + 1)
+            elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                self._execute_action()
     
-    def handle_input(self, input_handler):
-        """Handle input."""
-        for event in pygame.event.get():
-            self.input_handler.process_event(event)
+    def _execute_action(self):
+        """Execute selected action."""
+        if self.selected_action == 0:  # Travel
+            self.engine.travel(20)
+        elif self.selected_action == 1:  # Hunt
+            self.engine.hunt(1)
+        elif self.selected_action == 2:  # Rest
+            self.engine.rest(1)
+        elif self.selected_action == 3:  # Status
+            pass  # Stay on screen but show status
     
     def update(self, delta_time: float):
         """Update screen."""
@@ -166,11 +147,16 @@ class TravelScreen(Screen):
             renderer.draw_text(f"  {member.name}: {member.health}% - {status}",
                              40, 180 + i * 20, COLORS['white'])
         
-        # Draw buttons
-        renderer.draw_text("Travel", 60, WINDOW_HEIGHT - 90, COLORS['white'])
-        renderer.draw_text("Hunt", 175, WINDOW_HEIGHT - 90, COLORS['white'])
-        renderer.draw_text("Rest", 290, WINDOW_HEIGHT - 90, COLORS['white'])
-        renderer.draw_text("Status", 395, WINDOW_HEIGHT - 90, COLORS['white'])
+        # Draw buttons with selection highlight
+        buttons = ["Travel", "Hunt", "Rest", "Status"]
+        x_positions = [60, 175, 290, 395]
+        
+        for i, (button_text, x_pos) in enumerate(zip(buttons, x_positions)):
+            color = COLORS['light_cyan'] if i == self.selected_action else COLORS['white']
+            renderer.draw_text(button_text, x_pos, WINDOW_HEIGHT - 90, color)
+        
+        renderer.draw_text("Use LEFT/RIGHT or A/D to select | ENTER to execute",
+                          20, WINDOW_HEIGHT - 30, COLORS['green'])
         
         renderer.update()
     
@@ -223,6 +209,7 @@ class TravelScreen(Screen):
         pass
 
 
+
 class HuntScreen(Screen):
     """Hunting screen."""
     
@@ -236,13 +223,12 @@ class HuntScreen(Screen):
         self.engine = game_engine
         self.hunt_time = 0
     
-    def handle_input(self, input_handler):
+    def handle_input(self, event):
         """Handle input."""
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    # Finish hunting
-                    self.engine.set_state(GameState_Enum.TRAVEL)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                # Finish hunting
+                self.engine.set_state(GameState_Enum.TRAVEL)
     
     def update(self, delta_time: float):
         """Update screen."""
@@ -270,12 +256,11 @@ class StatusScreen(Screen):
         super().__init__()
         self.engine = game_engine
     
-    def handle_input(self, input_handler):
+    def handle_input(self, event):
         """Handle input."""
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.engine.set_state(GameState_Enum.TRAVEL)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.engine.set_state(GameState_Enum.TRAVEL)
     
     def update(self, delta_time: float):
         """Update screen."""

@@ -67,6 +67,10 @@ class Game:
                     self.game_started = True
                     self.engine.initialize_game()
                     self.engine.current_screen = TravelScreen(self.engine)
+                elif self.game_started and self.engine.current_screen:
+                    # Pass events to current screen
+                    if hasattr(self.engine.current_screen, 'handle_input'):
+                        self.engine.current_screen.handle_input(event)
 
     def update(self, delta_time: float):
         """Update game logic."""
